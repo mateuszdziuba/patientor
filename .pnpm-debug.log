@@ -1,0 +1,23 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: dev",
+      "code": "ENOENT",
+      "stack": "Error: not found: dev\n    at getNotFoundError (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41670:51)\n    at Function.whichSync [as sync] (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41747:13)\n    at getCommandAbsolutePathSync (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43312:44)\n    at default_1 (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43321:32)\n    at /home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:172142:39"
+    }
+  },
+  "2 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/home/mateusz/fullstack-open-2021/exercises/patientor",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: dev",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: dev\n    at getNotFoundError (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41670:51)\n    at Function.whichSync [as sync] (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41747:13)\n    at getCommandAbsolutePathSync (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43312:44)\n    at default_1 (/home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43321:32)\n    at /home/mateusz/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:172142:39"
+    }
+  }
+}
