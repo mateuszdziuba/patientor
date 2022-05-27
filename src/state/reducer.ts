@@ -1,5 +1,5 @@
 import { State } from './state';
-import { Patient, Diagnosis } from '../types';
+import { Patient, Diagnosis, Entry } from '../types';
 
 export type Action =
   | {
@@ -11,8 +11,18 @@ export type Action =
       payload: Patient;
     }
   | {
+      type: 'UPDATE_PATIENT';
+      payload: Patient;
+      patientId: string;
+    }
+  | {
       type: 'SET_DIAGNOSES_LIST';
       payload: Diagnosis[];
+    }
+  | {
+      type: 'ADD_ENTRY';
+      payload: Entry;
+      patientId: string;
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -36,6 +46,14 @@ export const reducer = (state: State, action: Action): State => {
           [action.payload.id]: action.payload
         }
       };
+    case 'UPDATE_PATIENT':
+      return {
+        ...state,
+        patients: {
+          ...state.patients,
+          [action.patientId]: action.payload
+        }
+      };
     case 'SET_DIAGNOSES_LIST':
       return {
         ...state,
@@ -45,6 +63,21 @@ export const reducer = (state: State, action: Action): State => {
             {}
           ),
           ...state.diagnoses
+        }
+      };
+    case 'ADD_ENTRY':
+      console.log(state.patients[action.patientId]);
+      return {
+        ...state,
+        patients: {
+          ...state.patients,
+          [action.patientId]: {
+            ...state.patients[action.patientId],
+            entries: [
+              ...state.patients[action.patientId].entries,
+              action.payload
+            ]
+          }
         }
       };
     default:
@@ -66,9 +99,25 @@ export const addPatient = (patient: Patient): Action => {
   };
 };
 
+export const updatePatient = (patientId: string, patient: Patient): Action => {
+  return {
+    type: 'UPDATE_PATIENT',
+    payload: patient,
+    patientId
+  };
+};
+
 export const setDiagnosesList = (api: Diagnosis[]): Action => {
   return {
     type: 'SET_DIAGNOSES_LIST',
     payload: api
+  };
+};
+
+export const addEntry = (patientId: string, entry: Entry): Action => {
+  return {
+    type: 'ADD_ENTRY',
+    payload: entry,
+    patientId
   };
 };

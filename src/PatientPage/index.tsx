@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FemaleOutlined, MaleOutlined } from '@mui/icons-material';
-import { Box } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 
-import { Patient, Entry } from '../types';
+import { Patient, Entry, EntryType } from '../types';
 import { apiBaseUrl } from '../constants';
 // import { useStateValue } from '../state';
 import HealthCheckEntry from './HealthCheckEntry';
 import HospitalEntry from './HospitalEntry';
 import OccupationalHealthcareEntry from './OccupationalHealthcareEntry';
+import { addEntry, updatePatient, useStateValue } from '../state';
+import { EntryFields } from '../AddEntryModal/AddEntryForm';
+import AddEntryModal from '../AddEntryModal';
 
 const PatientPage = ({ id }: { id: string | undefined }) => {
   const [patient, setPatient] = useState<Patient | undefined>();
+  const [, dispatch] = useStateValue();
   // const [{ diagnoses }] = useStateValue();
   useEffect(() => {
     const getPatient = async () => {
@@ -22,7 +26,7 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
           );
           const currPatient: Patient = response.data;
           setPatient(currPatient);
-          console.log(currPatient);
+          dispatch(updatePatient(id, currPatient));
         }
       } catch (error) {
         console.error(error);
@@ -31,6 +35,39 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
     void getPatient();
   }, [id, setPatient]);
 
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>();
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFields) => {
+    try {
+      if (patient && id) {
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${patient.id}/entries`,
+          values
+        );
+        console.log(patient.entries);
+        dispatch(addEntry(id, newEntry));
+        setPatient({ ...patient, entries: patient.entries.concat(newEntry) });
+      }
+      closeModal();
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || 'Unrecognized axios error');
+        setError(
+          String(e?.response?.data?.error) || 'Unrecognized axios error'
+        );
+      } else {
+        console.error('Unknown error', e);
+        setError('Unknown error');
+      }
+    }
+  };
   const assertNever = (value: never): never => {
     throw new Error(
       `Unhandled discriminated union member: ${JSON.stringify(value)}`
@@ -39,11 +76,11 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
 
   const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
     switch (entry.type) {
-      case 'Hospital':
+      case EntryType.Hospital:
         return <HospitalEntry entry={entry} />;
-      case 'OccupationalHealthcare':
+      case EntryType.OccupationalHealthcare:
         return <OccupationalHealthcareEntry entry={entry} />;
-      case 'HealthCheck':
+      case EntryType.HealthCheck:
         return <HealthCheckEntry entry={entry} />;
       default:
         return assertNever(entry);
@@ -79,9 +116,18 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
                 marginBlock: '0.5em'
               }}
             >
-              {EntryDetails({ entry })}
+              <EntryDetails entry={entry} />
             </Box>
           ))}
+          <AddEntryModal
+            modalOpen={modalOpen}
+            onSubmit={submitNewEntry}
+            error={error}
+            onClose={closeModal}
+          />
+          <Button variant="contained" onClick={() => openModal()}>
+            Add New Entry
+          </Button>
         </>
       )}
     </div>
