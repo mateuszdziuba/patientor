@@ -114,7 +114,7 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         specialist: '',
         diagnosisCodes: '',
         type: EntryType.Hospital,
-        healthCheckRating: 0,
+        healthCheckRating: HealthCheckRating.Healthy,
         dischargeDate: '',
         dischargeCriteria: '',
         employerName: '',

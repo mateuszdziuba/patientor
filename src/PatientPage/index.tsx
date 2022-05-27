@@ -104,7 +104,7 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
           <h3>entries</h3>
           {patient.entries.map((entry) => (
             <Box
-              key={entry.date}
+              key={entry.id}
               sx={{
                 borderRadius: '16px',
                 borderColor: 'black',
